@@ -12,11 +12,11 @@ import java.util.Objects;
  * @author Federico Girelli
  */
 
-public class DataOra
+public class DataOra extends Data
 {
  protected int ora;
  
- public DataOra(int anno,int mese,int giorno,int ora) 
+ public DataOra(int anno, int mese, int giorno, int ora) 
  {
   super(anno, mese, giorno);
 
