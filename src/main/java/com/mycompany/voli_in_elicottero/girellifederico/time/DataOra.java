@@ -35,4 +35,28 @@ public class DataOra extends Data
  {
   return new Data(anno, mese, giorno);
  }
+ 
+ @Override
+ public boolean equals(Object o) 
+ {
+  if(this==o) return true;
+  if(o==null || getClass()!=o.getClass()) return false;
+ 
+  if(!super.equals(o)) return false;
+      DataOra dataOra=(DataOra) o;
+      
+  return ora==dataOra.ora;
+ }
+
+ public boolean equals(DataOra o) 
+ {
+  return super.equals(o) && ora==o.ora;
+ }
+
+ @Override
+ public String toString() 
+ {
+  return super.toString() + " : " + ora;
+ }
 }
+

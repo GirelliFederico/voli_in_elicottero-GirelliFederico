@@ -40,4 +40,22 @@ public class Data
  {
   return giorno;
  }
+ 
+ public boolean equals(Object o) 
+ {
+  if (this==o) return true;
+  if (o==null || getClass()!=o.getClass()) return false;
+  return equals((Data) o);
+ }
+
+ public boolean equals(Data o) 
+ {
+  return anno==o.anno && mese==o.mese && giorno==o.giorno;
+ }
+
+ @Override
+ public String toString()
+ {
+  return anno + "/" + mese + "/" + giorno;
+ }
 }
