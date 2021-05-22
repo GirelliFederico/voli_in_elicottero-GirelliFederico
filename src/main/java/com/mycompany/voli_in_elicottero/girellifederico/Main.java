@@ -76,6 +76,15 @@ public class Main
      System.out.println("trasporto merci? (true [si] o false [no])");
      boolean merci=scanner.nextBoolean();
     }
+     
+    case 2 -> 
+    {
+     System.out.println("inserire nome e cognome:");
+     String nome=scanner.next();
+     String cognome=scanner.next();
+
+     ListaPrenotazioni prenotazioni=gestoreVoli.listaPrenotazioni(nome, cognome);
+    }
    }
   }
  }

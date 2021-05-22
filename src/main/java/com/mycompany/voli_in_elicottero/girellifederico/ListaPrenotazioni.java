@@ -94,5 +94,21 @@ public class ListaPrenotazioni
   numPrenotazioni=0;
   Arrays.fill(prenotazioni, null);
  }
+ 
+ public void ordina()
+ {
+  for(int i=0; i<=numPrenotazioni-1; i++)
+  {
+   for(int j=i+1; j<numPrenotazioni; j++)
+   {
+    if(prenotazioni[j].getNome().compareToIgnoreCase(prenotazioni[i].getNome())<0 || (prenotazioni[j].getNome().compareToIgnoreCase(prenotazioni[i].getNome())==0  && prenotazioni[j].getCognome().compareToIgnoreCase(prenotazioni[i].getCognome())<0))
+    {
+     Prenotazione tmp=prenotazioni[i];
+     prenotazioni[i]=prenotazioni[j];
+     prenotazioni[j]=tmp;
+    }
+   }
+  }
+ }
 }
 
