@@ -9,6 +9,7 @@ package com.mycompany.voli_in_elicottero.girellifederico;
 import com.mycompany.voli_in_elicottero.girellifederico.time.*;
 
 import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 /**
@@ -40,7 +41,7 @@ public class GestoreVoli
       elicottero.azzeraPrenotazioni();
  }
 
- public boolean prenota(String nome, String cognome, DataOra dataOra, int passegeri, boolean trasportoMerce) 
+ public boolean prenota(String nome, String cognome, DataOra dataOra, int passeggeri, boolean trasportoMerce) 
  {
   int elicottero=-1; 
   for(int i=0; i<elicotteri.length; i++) 
@@ -56,10 +57,10 @@ public class GestoreVoli
   if(elicottero<0)
      return false;
 
-  return prenota(idPrenotazione++, nome, cognome, dataOra, passegeri, elicottero, trasportoMerce);
+  return prenota(idPrenotazione++, nome, cognome, dataOra, passeggeri, elicottero, trasportoMerce);
  }
 
- private boolean prenota(int id, String nome, String cognome, DataOra dataOra, int passegeri, int elicottero, boolean trasportoMerce) 
+ private boolean prenota(int id, String nome, String cognome, DataOra dataOra, int passeggeri, int elicottero, boolean trasportoMerce) 
  {
   for(Elicottero eli : elicotteri) 
   {
@@ -70,7 +71,7 @@ public class GestoreVoli
       return false;
   }
 
-  Prenotazione prenotazione=new Prenotazione(id, nome, cognome, dataOra, elicottero, passegeri, trasportoMerce);
+  Prenotazione prenotazione=new Prenotazione(id, nome, cognome, dataOra, elicottero, passeggeri, trasportoMerce);
   elicotteri[elicottero].aggiungiPrenotazione(prenotazione);
   return true;
  }
@@ -125,4 +126,122 @@ public class GestoreVoli
 
   return prenotazioni;
  }
-}
+ 
+ public void salvaCSV(String path) throws IOException 
+ {
+  FileWriter fileWriter=new FileWriter(path);
+
+  for(Elicottero elicottero : elicotteri)
+  {
+   ListaPrenotazioni prenotazioni=elicottero.getPrenotazioni();
+   for(int i=0; i<prenotazioni.getDimensioni(); i++) 
+   {
+    Prenotazione p=prenotazioni.get(i);
+
+    String str=String.format("%d,%d,%d,%d,%d,%s,%s,%d,%d,%b,\n",
+    p.getId(), p.getDataOra().getAnno(), p.getDataOra().getMese(), p.getDataOra().getGiorno(), p.getDataOra().getOra(),
+    p.getNome(), p.getCognome(), p.getPasseggeri(), p.getElicottero(), p.getTrasportoMerce());
+
+    fileWriter.write(str);
+   }
+  }
+  fileWriter.flush();
+  fileWriter.close();
+ }
+
+ public void caricaCSV(String path) throws IOException 
+ {
+  idPrenotazione=0;
+  azzeraPrenotazioni();
+
+  List<String> lines=Files.readAllLines(new File(path).toPath());
+
+  for(String line : lines) 
+  {
+   String[] data=line.split(",");
+
+   int id=Integer.parseInt(data[0]);
+
+   int anno=Integer.parseInt(data[1]);
+   int mese=Integer.parseInt(data[2]);
+   int giorno=Integer.parseInt(data[3]);
+   int ora=Integer.parseInt(data[4]);
+
+   String nome=data[5];
+   String cognome=data[6];
+
+   int passeggeri=Integer.parseInt(data[7]);
+   int elicottero=Integer.parseInt(data[8]);
+   boolean trasportoMerce=Boolean.parseBoolean(data[9]);
+
+   prenota(id, nome, cognome, new DataOra(anno, mese, giorno, ora), passeggeri, elicottero, trasportoMerce);
+   if(id > idPrenotazione) idPrenotazione = id;
+  }
+ }
+
+ public void salvaBin(String path) throws IOException 
+ {
+  ByteArrayOutputStream buffer=new ByteArrayOutputStream();
+
+  for (Elicottero elicottero : elicotteri) 
+  {
+   ListaPrenotazioni prenotazioni=elicottero.getPrenotazioni();
+
+   for (int i=0; i<prenotazioni.getDimensioni(); i++) 
+   {
+    Prenotazione p=prenotazioni.get(i);
+
+    buffer.write(p.getId());
+    buffer.write(p.getDataOra().getAnno());
+    buffer.write(p.getDataOra().getMese());
+    buffer.write(p.getDataOra().getGiorno()); 
+    buffer.write(p.getDataOra().getOra());
+
+    byte[] bytes=p.getNome().getBytes();
+    buffer.write(bytes.length);
+    buffer.write(bytes);
+
+    bytes=p.getCognome().getBytes();
+    buffer.write(bytes.length);
+    buffer.write(bytes);
+
+    buffer.write(p.getPasseggeri());
+    buffer.write(p.getElicottero());
+    buffer.write(p.getTrasportoMerce() ? 1 : 0);
+   }
+  }
+  Files.write(Path.of(path), buffer.toByteArray());
+ }
+
+ public void caricaBin(String path) throws IOException 
+ {
+  azzeraPrenotazioni();
+  byte[] bytes=Files.readAllBytes(Path.of(path));
+  ByteArrayInputStream buffer=new ByteArrayInputStream(bytes);
+
+  if(bytes.length==0)
+     return;
+
+  while (buffer.available()!=0) 
+  {
+   int id=buffer.read();
+   int anno=buffer.read();
+   int mese=buffer.read();
+   int giorno=buffer.read();
+   int ora=buffer.read();
+
+   int len=buffer.read();
+   String nome=new String(buffer.readNBytes(len));
+
+   len=buffer.read();
+   String cognome=new String(buffer.readNBytes(len));
+
+   int passeggeri=buffer.read();
+   int elicottero=buffer.read();
+   boolean trasportoMerce=buffer.read()!=0;
+
+   prenota(id, nome, cognome, new DataOra(anno, mese, giorno, ora), passeggeri, elicottero, trasportoMerce);
+   if(id>idPrenotazione) idPrenotazione=id;
+  }
+ }
+ }
