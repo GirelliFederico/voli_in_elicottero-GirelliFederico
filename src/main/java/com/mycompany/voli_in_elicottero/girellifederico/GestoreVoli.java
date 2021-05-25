@@ -29,18 +29,27 @@ public class GestoreVoli
   for(int i=0; i<elicotteri.length; i++)
        elicotteri[i]=new Elicottero();
  }
-
+ /**
+  *metodo che restituisce il numero degli elicotteri.
+  * @return elicotteri.length
+  */
  public int getNumElicotteri() 
  {
   return elicotteri.length;
  }
-
+ /**
+  *metodo che consente l'azzeramento delle prenotazioni effettuate.
+  * 
+  */
  public void azzeraPrenotazioni() 
  {
   for(Elicottero elicottero : elicotteri)
       elicottero.azzeraPrenotazioni();
  }
-
+ /**
+  *metodo che consente di creare una prenotazione se ci sono elicotteri disponibili.
+  * 
+  */
  public boolean prenota(String nome, String cognome, DataOra dataOra, int passeggeri, boolean trasportoMerce) 
  {
   int elicottero=-1; 
@@ -59,7 +68,10 @@ public class GestoreVoli
 
   return prenota(idPrenotazione++, nome, cognome, dataOra, passeggeri, elicottero, trasportoMerce);
  }
-
+ /**
+  *metodo che consente di creare una prenotazione se quei nome e cognome dei clienti non sono già stati inseriti.
+  *
+  */
  private boolean prenota(int id, String nome, String cognome, DataOra dataOra, int passeggeri, int elicottero, boolean trasportoMerce) 
  {
   for(Elicottero eli : elicotteri) 
@@ -75,7 +87,10 @@ public class GestoreVoli
   elicotteri[elicottero].aggiungiPrenotazione(prenotazione);
   return true;
  }
-
+ /**
+  *metodo che consente l'annullamento di una prenotazione.
+  * 
+  */
  public boolean annullaPrenotazione(String nome, String cognome, DataOra dataOra) 
  {
   for(Elicottero eli : elicotteri) 
@@ -91,7 +106,10 @@ public class GestoreVoli
   }
   return false;
  }
-
+ /**
+  *metodo che contiene la lista della prenotazione in base alla data.
+  * @return prenotazioni
+  */
  public ListaPrenotazioni listaPrenotazioni(Data data) 
  {
   ListaPrenotazioni prenotazioni=new ListaPrenotazioni();
@@ -105,7 +123,10 @@ public class GestoreVoli
 
   return prenotazioni;
  }
-	
+ /**
+  *metodo che contiene la lista della prenotazione in base all'elicottero e alla data.
+  * @return elicotteri[elicottero].getPrenotazioni(data)
+  */	
  public ListaPrenotazioni listaPrenotazioni(int elicottero, Data data) 
  {
   if(elicottero<0 || elicottero>=elicotteri.length)
@@ -113,7 +134,10 @@ public class GestoreVoli
 
   return elicotteri[elicottero].getPrenotazioni(data);
  }
-
+ /**
+  *metodo che contiene la lista della prenotazione in base al nome e al cognome.
+  * @return prenotazioni
+  */
  public ListaPrenotazioni listaPrenotazioni(String nome, String cognome) 
  {
   ListaPrenotazioni prenotazioni=new ListaPrenotazioni();
@@ -126,7 +150,10 @@ public class GestoreVoli
 
   return prenotazioni;
  }
- 
+ /**metodo che consente l'esportazione della prenotazione nel file CSV.
+  *
+  * 
+  */ 
  public void salvaCSV(String path) throws IOException 
  {
   FileWriter fileWriter=new FileWriter(path);
@@ -148,7 +175,10 @@ public class GestoreVoli
   fileWriter.flush();
   fileWriter.close();
  }
-
+ /**
+  *metodo che consente il caricamento della prenotazione salvata nel file CSV.
+  *
+  */
  public void caricaCSV(String path) throws IOException 
  {
   idPrenotazione=0;
@@ -178,7 +208,10 @@ public class GestoreVoli
    if(id > idPrenotazione) idPrenotazione = id;
   }
  }
-
+ /**
+  *metodo che consente l'esportazione della prenotazione nel file binario.
+  * 
+  */
  public void salvaBin(String path) throws IOException 
  {
   ByteArrayOutputStream buffer=new ByteArrayOutputStream();
@@ -212,7 +245,10 @@ public class GestoreVoli
   }
   Files.write(Path.of(path), buffer.toByteArray());
  }
-
+ /**
+  *metodo che consente il caricamento della prenotazione salvata nel file binario.
+  * 
+  */
  public void caricaBin(String path) throws IOException 
  {
   azzeraPrenotazioni();
