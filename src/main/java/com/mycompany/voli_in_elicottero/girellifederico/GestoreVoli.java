@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.mycompany.voli_in_elicottero.girellifederico;
 
@@ -46,10 +41,7 @@ public class GestoreVoli
   for(Elicottero elicottero : elicotteri)
       elicottero.azzeraPrenotazioni();
  }
- /**
-  *metodo che consente di creare una prenotazione se ci sono elicotteri disponibili.
-  * 
-  */
+
  public boolean prenota(String nome, String cognome, DataOra dataOra, int passeggeri, boolean trasportoMerce) 
  {
   int elicottero=-1; 
@@ -68,10 +60,7 @@ public class GestoreVoli
 
   return prenota(idPrenotazione++, nome, cognome, dataOra, passeggeri, elicottero, trasportoMerce);
  }
- /**
-  *metodo che consente di creare una prenotazione se quei nome e cognome dei clienti non sono già stati inseriti.
-  *
-  */
+
  private boolean prenota(int id, String nome, String cognome, DataOra dataOra, int passeggeri, int elicottero, boolean trasportoMerce) 
  {
   for(Elicottero eli : elicotteri) 
